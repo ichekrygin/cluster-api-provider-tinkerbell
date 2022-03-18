@@ -50,7 +50,7 @@ func (wt WorkflowTemplate) Render() (string, error) {
 	}
 
 	return fmt.Sprintf(workflowTemplate, wt.Name, wt.Name, wt.ImageURL, wt.DestDisk, wt.DestPartition,
-		wt.MetadataURL, wt.DestPartition, wt.DestPartition), nil
+		wt.MetadataURL, wt.DestPartition), nil
 }
 
 const (
@@ -67,7 +67,7 @@ tasks:
       - /lib/firmware:/lib/firmware:ro
     actions:
       - name: "stream-image"
-        image: oci2disk:v1.0.0
+        image: image2disk:v1.0.0
         timeout: 360
         environment:
           IMG_URL: %s
@@ -111,12 +111,10 @@ tasks:
           DIRMODE: 0700
           CONTENTS: |
             datasource: Ec2
-      - name: "kexec-image"
-        image: kexec:v1.0.0
+      - name: "reboot"
+        image: reboot:v1.0
         timeout: 90
-        pid: host
-        environment:
-          BLOCK_DEVICE: %s
-          FS_TYPE: ext4
+        volumes:
+          - /worker:/worker
 `
 )
